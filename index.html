@@ -2,9 +2,154 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Calcular_1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ponto Eletrônico - Sistema de Controle</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Olá, Jair! Projeto Calcular_1 está funcionando.</h1>
+    <div class="container">
+        <header>
+            <h1>⏰ Sistema de Ponto Eletrônico</h1>
+            <p class="subtitle">Controle de frequência de colaboradores</p>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="registro">Registrar Ponto</button>
+            <button class="tab-btn" data-tab="colaboradores">Colaboradores</button>
+            <button class="tab-btn" data-tab="historico">Histórico</button>
+            <button class="tab-btn" data-tab="relatorios">Relatórios</button>
+        </nav>
+
+        <!-- Aba: Registrar Ponto -->
+        <div id="registro" class="tab-content active">
+            <div class="card">
+                <h2>Registrar Ponto</h2>
+                <div class="registro-form">
+                    <div class="form-group">
+                        <label for="colaborador-select">Colaborador:</label>
+                        <select id="colaborador-select" required>
+                            <option value="">Selecione um colaborador</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="tipo-registro">Tipo de Registro:</label>
+                        <select id="tipo-registro" required>
+                            <option value="entrada">Entrada</option>
+                            <option value="saida">Saída</option>
+                            <option value="entrada-almoco">Entrada Almoço</option>
+                            <option value="saida-almoco">Saída Almoço</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="data-registro">Data:</label>
+                        <input type="date" id="data-registro" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="hora-registro">Hora:</label>
+                        <input type="time" id="hora-registro" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="observacao">Observação (opcional):</label>
+                        <textarea id="observacao" rows="3" placeholder="Adicione uma observação..."></textarea>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="btn-registrar">Registrar Ponto</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Últimos Registros</h3>
+                <div id="ultimos-registros" class="registros-list"></div>
+            </div>
+        </div>
+
+        <!-- Aba: Colaboradores -->
+        <div id="colaboradores" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Gerenciar Colaboradores</h2>
+                    <button class="btn btn-primary" id="btn-novo-colaborador">+ Novo Colaborador</button>
+                </div>
+                
+                <div id="form-colaborador" class="form-colaborador" style="display: none;">
+                    <h3>Adicionar/Editar Colaborador</h3>
+                    <div class="form-group">
+                        <label for="nome-colaborador">Nome Completo:</label>
+                        <input type="text" id="nome-colaborador" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cpf-colaborador">CPF:</label>
+                        <input type="text" id="cpf-colaborador" placeholder="000.000.000-00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cargo-colaborador">Cargo:</label>
+                        <input type="text" id="cargo-colaborador" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="departamento-colaborador">Departamento:</label>
+                        <input type="text" id="departamento-colaborador" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="jornada-colaborador">Jornada de Trabalho (horas/dia):</label>
+                        <input type="number" id="jornada-colaborador" min="1" max="12" value="8" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-primary" id="btn-salvar-colaborador">Salvar</button>
+                        <button type="button" class="btn btn-secondary" id="btn-cancelar-colaborador">Cancelar</button>
+                    </div>
+                </div>
+
+                <div id="lista-colaboradores" class="lista-colaboradores"></div>
+            </div>
+        </div>
+
+        <!-- Aba: Histórico -->
+        <div id="historico" class="tab-content">
+            <div class="card">
+                <h2>Histórico de Registros</h2>
+                <div class="filtros">
+                    <div class="form-group">
+                        <label for="filtro-colaborador">Colaborador:</label>
+                        <select id="filtro-colaborador">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="filtro-data-inicio">Data Início:</label>
+                        <input type="date" id="filtro-data-inicio">
+                    </div>
+                    <div class="form-group">
+                        <label for="filtro-data-fim">Data Fim:</label>
+                        <input type="date" id="filtro-data-fim">
+                    </div>
+                    <button type="button" class="btn btn-primary" id="btn-filtrar">Filtrar</button>
+                    <button type="button" class="btn btn-secondary" id="btn-limpar-filtros">Limpar</button>
+                </div>
+                <div id="historico-registros" class="historico-list"></div>
+            </div>
+        </div>
+
+        <!-- Aba: Relatórios -->
+        <div id="relatorios" class="tab-content">
+            <div class="card">
+                <h2>Relatórios</h2>
+                <div class="filtros">
+                    <div class="form-group">
+                        <label for="relatorio-colaborador">Colaborador:</label>
+                        <select id="relatorio-colaborador" required>
+                            <option value="">Selecione um colaborador</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="relatorio-mes">Mês/Ano:</label>
+                        <input type="month" id="relatorio-mes" required>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="btn-gerar-relatorio">Gerar Relatório</button>
+                </div>
+                <div id="relatorio-resultado" class="relatorio-resultado"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
