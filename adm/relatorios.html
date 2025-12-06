@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios - Colaboradores e Registros</title>
+    <link rel="stylesheet" href="styles-admin.css">
+    <style>
+        .relatorios-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .filtros-relatorio {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .colaborador-card-relatorio {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .colaborador-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .colaborador-foto-relatorio {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary-color);
+        }
+
+        .colaborador-info-relatorio h3 {
+            margin-bottom: 5px;
+            color: var(--text-primary);
+        }
+
+        .colaborador-info-relatorio p {
+            color: var(--text-secondary);
+            margin: 3px 0;
+        }
+
+        .registros-tabela {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .registros-tabela th {
+            background: var(--bg-color);
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .registros-tabela td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .registros-tabela tr:hover {
+            background: var(--bg-color);
+        }
+
+        .badge-tipo {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .badge-entrada {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-saida {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .foto-registro {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .foto-registro:hover {
+            transform: scale(2);
+            z-index: 10;
+            position: relative;
+        }
+
+        .empty-registros {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .stats-colaborador {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            background: var(--bg-color);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-item h4 {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .stat-item .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .modal-foto {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-foto.active {
+            display: flex;
+        }
+
+        .modal-foto img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+        }
+
+        .modal-foto .close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container relatorios-container">
+        <header class="admin-header">
+            <h1>📊 Relatórios - Colaboradores e Registros</h1>
+            <div>
+                <a href="../index.html" class="btn-voltar-home">← Voltar para Ponto</a>
+                <a href="index.html" class="btn-voltar-home" style="margin-left: 10px;">⚙️ Administração</a>
+            </div>
+        </header>
+
+        <div class="filtros-relatorio">
+            <div class="form-group">
+                <label for="filtro-colaborador">Filtrar por Colaborador:</label>
+                <select id="filtro-colaborador">
+                    <option value="">Todos os colaboradores</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="filtro-data-inicio">Data Início:</label>
+                <input type="date" id="filtro-data-inicio">
+            </div>
+            <div class="form-group">
+                <label for="filtro-data-fim">Data Fim:</label>
+                <input type="date" id="filtro-data-fim">
+            </div>
+            <div class="form-group" style="display: flex; align-items: flex-end;">
+                <button class="btn btn-primary" id="btn-filtrar" style="width: 100%;">Filtrar</button>
+            </div>
+            <div class="form-group" style="display: flex; align-items: flex-end;">
+                <button class="btn btn-secondary" id="btn-limpar-filtros" style="width: 100%;">Limpar Filtros</button>
+            </div>
+        </div>
+
+        <div id="lista-relatorios"></div>
+    </div>
+
+    <!-- Modal para visualizar foto -->
+    <div class="modal-foto" id="modal-foto">
+        <span class="close" id="close-modal">&times;</span>
+        <img id="foto-modal" src="" alt="Foto do registro">
+    </div>
+
+    <script src="relatorios.js"></script>
+</body>
+</html>
+
